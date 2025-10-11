@@ -7,7 +7,7 @@ spring:
     topic:
       start-saga: start-saga
       finish-success: finish-success
-      finish-fail: finish-f ail
+      finish-fail: finish-fail
       orchestrator: orchestrator
     consumer:
       group-id: orchestrator-group

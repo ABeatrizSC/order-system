@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum ETopic {
+public enum ETopics {
     START_SAGA("start-saga"),
     BASE_ORCHESTRATOR("orchestrator"),
     FINISH_SUCCESS("finish-success"),
