@@ -23,7 +23,7 @@ Este repositório contém o código do projeto desenvolvido durante o curso ["Ar
 
 Para fins de estudos sobre conceitos de padrões de desenvolvimento em arquitetura de microsserviços e formas de se lidar com **transações distribuidas** e sua **consistência de dados**, foi desenvolvido um sistema de pedidos utilizando o **padrão Saga Orquestrado com Java 17 e Spring Boot 3**.
 
-![Order system fluxogram](docs/images/order-system-fluxogram.jpg)
+![Order system flowchart](docs/images/order-system-fluxogram.jpg)
 (Exemplo de transação distribuída de um sistemas de pedidos. Fonte: [Baeldung](https://www.baeldung.com/wp-content/uploads/sites/4/2021/04/distributed-transaction.png))
 
 ## O que é o padrão Saga?
@@ -45,6 +45,7 @@ O padrão Saga tem como objetivo garantir que, em casos de falha no fluxo de uma
 * [Requisitos](#-requisitos)
 * [Guia de Instalação](#-guia-de-instalação)
 * [Endpoints](#-endpoints)
+* [Topicos](#-topicos)
 * [Contato](#-contato)
 
 </br>
@@ -54,7 +55,8 @@ O padrão Saga tem como objetivo garantir que, em casos de falha no fluxo de uma
 - Geração de pedidos;
 - Validação de produtos informados em um pedido;
 - Simulação de pagamentos de pedidos;
-- Validação de disponibilidade e baixa no estoque dos produtos de um pedido.
+- Validação de disponibilidade e baixa no estoque dos produtos de um pedido;
+Idempotência: O sistema impede a publicação de eventos com um `orderId` ou `transactionId` já existente. Isso garante que o mesmo evento não seja processado mais de uma vez.
 
 </br>
 
@@ -72,11 +74,14 @@ O padrão Saga tem como objetivo garantir que, em casos de falha no fluxo de uma
 # 🧠 Arquitetura do Sistema
 ![Order system architecture](docs/images/order_system.png)
 
+## Fluxograma
+![Order system fluxograma](docs/images/order_system_flowchart.png)
+
+- Acesse a visualização completa do fluxograma [aqui](https://whimsical.com/order-system-fluxogram-LUyp7k8U2xNJmfnW6jPcup)
+
 </br>
 
 # 🛠️ Tecnologias Utilizadas
-
-## Back-End
 
 * **Java 17**: Linguagem de programação de alto nível e orientada a objetos amplamente utilizada para construir aplicações do lado do servidor, serviços web e aplicações Android.
 
@@ -110,6 +115,8 @@ Para executar este projeto, é necessário ter:
 * Docker
 * Git
 
+</br>
+
 # 🚀 Guia de Instalação
 
 1. **Clonar o repositório**
@@ -140,7 +147,7 @@ docker-compose up --build
 
 ## 1. ORDER-SERVICE
 
-- Microsserviço responsável por gerar um pedido.
+- Microsserviço responsável por gerar um pedido e visualizar eventos.
 
 ### **POST** `/api/orders`
 
@@ -239,34 +246,34 @@ docker-compose up --build
     "status": "SUCCESS",
     "eventHistory": [
         {
-        "source": "ORCHESTRATOR",
-        "status": "SUCCESS",
-        "message": "Saga started!",
-        "createdAt": "2023-04-21T14:32:56.78770516"
+          "source": "ORCHESTRATOR",
+          "status": "SUCCESS",
+          "message": "Saga started!",
+          "createdAt": "2023-04-21T14:32:56.78770516"
         },
         {
-        "source": "PRODUCT_VALIDATION_SERVICE",
-        "status": "SUCCESS",
-        "message": "Products are validated successfully!",
-        "createdAt": "2023-04-21T14:32:57.169378616"
+          "source": "PRODUCT_VALIDATION_SERVICE",
+          "status": "SUCCESS",
+          "message": "Products are validated successfully!",
+          "createdAt": "2023-04-21T14:32:57.169378616"
         },
         {
-        "source": "PAYMENT_SERVICE",
-        "status": "SUCCESS",
-        "message": "Payment realized successfully!",
-        "createdAt": "2023-04-21T14:32:57.617624655"
+          "source": "PAYMENT_SERVICE",
+          "status": "SUCCESS",
+          "message": "Payment realized successfully!",
+          "createdAt": "2023-04-21T14:32:57.617624655"
         },
         {
-        "source": "INVENTORY_SERVICE",
-        "status": "SUCCESS",
-        "message": "Inventory updated successfully!",
-        "createdAt": "2023-04-21T14:32:58.139176809"
+          "source": "INVENTORY_SERVICE",
+          "status": "SUCCESS",
+          "message": "Inventory updated successfully!",
+          "createdAt": "2023-04-21T14:32:58.139176809"
         },
         {
-        "source": "ORCHESTRATOR",
-        "status": "SUCCESS",
-        "message": "Saga finished successfully!",
-        "createdAt": "2023-04-21T14:32:58.248630293"
+          "source": "ORCHESTRATOR",
+          "status": "SUCCESS",
+          "message": "Saga finished successfully!",
+          "createdAt": "2023-04-21T14:32:58.248630293"
         }
     ],
     "createdAt": "2023-04-21T14:32:58.28"
@@ -368,6 +375,13 @@ Todos os erros tratados possuem o seguinte formato:
 | --------- | ------- | ------------------------- |
 | `status`  | Integer | Código HTTP do erro       |
 | `message` | String  | Mensagem descritiva do erro       |
+
+</br>
+
+# 📥 Topicos
+- Você também pode acessar o Redpanda Console para visualizar todo o fluxo de tópicos e publicar novos eventos no sistema a partir da URL: [http://localhost:8081](http://localhost:8081).
+
+![Redpanda console screenshot](/docs/images/redpanda-console-screenshot.png)
 
 </br>
 

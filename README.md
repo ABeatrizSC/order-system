@@ -24,7 +24,7 @@ This repository contains the project code developed during the course ["Arquitet
 
 For study purposes, to explore microservices architecture patterns and ways to handle **distributed transactions** and **data consistency**, an order system was developed using the **Orchestrated Saga Pattern with Java 17 and Spring Boot 3**.
 
-![Order system fluxogram](docs/images/order-system-fluxogram.jpg)
+![Order system flowchart](docs/images/order-system-fluxogram.jpg)
 (Example of a distributed transaction in an order system. Source: [Baeldung](https://www.baeldung.com/wp-content/uploads/sites/4/2021/04/distributed-transaction.png))
 
 ## What is Saga pattern?
@@ -46,6 +46,7 @@ The Saga pattern aims to ensure that, in case of a failure in the flow of a dist
 - [Requirements](#-requirements)
 - [Installation Guide](#-installation-guide)
 - [Endpoints](#-endpoints)
+- [Topics](#-topics)
 - [Contact](#-contact)
 
 </br>
@@ -55,7 +56,8 @@ The Saga pattern aims to ensure that, in case of a failure in the flow of a dist
 - Order generation;
 - Validation of products included in an order;
 - Simulation of order payments;
-- Validation of product availability and inventory deduction for the order.
+- Validation of product availability and inventory deduction for the order;
+- Idempotency: The system prevents publishing events with an existing `orderId` or `transactionId`. This ensures that the same event is not processed more than once.
 
 </br>
 
@@ -78,12 +80,14 @@ The Saga pattern aims to ensure that, in case of a failure in the flow of a dist
 # 🧠 System Architecture
 ![Order system architecture](docs/images/order_system.png)
 
+## Flowchart
+![Order system flowchart](docs/images/order_system_flowchart.png)
+
+- Access the flowchart [here](https://whimsical.com/order-system-fluxogram-LUyp7k8U2xNJmfnW6jPcup)
+
 </br>
 
 # 🛠️ Technologies Used
-
-## Back-End
-
 * **Java 17**: A high-level, object-oriented programming language widely used for building server-side applications, web services, and Android applications.
 
 * **Spring Boot 3**: A framework that simplifies the development of Java applications by providing built-in features for dependency injection, configuration, and microservices support.
@@ -152,7 +156,7 @@ docker-compose up --build
 
 ### **POST** `/api/orders`
 
-- Creates a new order
+- Creates a new order and visualize events
 
 #### Request Body
 - `OrderRequest`
@@ -288,7 +292,7 @@ docker-compose up --build
 ### **GET** `/api/events?orderId={id}`
 ### **GET** `/api/events?transactionId={id}`
 
-- Recupera dados específicos de um evento da saga pelo seu `orderId` ou `transactionId`:
+- Retrieves specific data from a saga event by its `orderId` or `transactionId`:
 
 #### Success Response
 - `Event`
@@ -302,18 +306,18 @@ docker-compose up --build
         "id": "64429e987a8b646915b3735f",
         "products": [
             {
-            "product": {
-                "code": "COMIC_BOOKS",
-                "unitValue": 15.5
-            },
-            "quantity": 3
+              "product": {
+                  "code": "COMIC_BOOKS",
+                  "unitValue": 15.5
+              },
+              "quantity": 3
             },
             {
-            "product": {
-                "code": "BOOKS",
-                "unitValue": 9.9
-            },
-            "quantity": 1
+              "product": {
+                  "code": "BOOKS",
+                  "unitValue": 9.9
+              },
+              "quantity": 1
             }
         ],
         "totalAmount": 56.40,
@@ -363,7 +367,7 @@ docker-compose up --build
 
 ## Error Messages
 
-All the erros handled will follow this format:
+All errors handled will follow this format:
 
 ```json
 {
@@ -376,6 +380,13 @@ All the erros handled will follow this format:
 | --------- | ------- | ------------------------- |
 | `status`  | Integer | HTTP status code          |
 | `message` | String  | Descriptive message       |
+
+</br>
+
+# 📥 Topics
+- You can also access the Redpanda Console to visualize all topics and publish new events in the system at [http://localhost:8081](http://localhost:8081) 
+
+![Redpanda console screenshot](/docs/images/redpanda-console-screenshot.png)
 
 </br>
 
